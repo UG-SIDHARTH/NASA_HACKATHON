@@ -33,7 +33,7 @@ import {
   CartesianGrid
 } from 'recharts';
 
-const API_BASE = "http://localhost:3003";
+const API_BASE = "";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('investigations');
@@ -41,6 +41,7 @@ export default function App() {
   const [rankings, setRankings] = useState([]);
   const [domain, setDomain] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [selectedInv, setSelectedInv] = useState(null);
@@ -66,30 +67,39 @@ export default function App() {
   const [chatLoading, setChatLoading] = useState(false);
 
   // Fetch initial data
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [invRes, rankRes, domRes] = await Promise.all([
-          fetch(`${API_BASE}/api/investigations`),
-          fetch(`${API_BASE}/api/rankings`),
-          fetch(`${API_BASE}/api/domain`)
-        ]);
-        const invData = await invRes.json();
-        const rankData = await rankRes.json();
-        const domData = await domRes.json();
-        setInvestigations(invData);
-        setRankings(rankData);
-        setDomain(domData);
-        if (invData.length > 0) {
-          setSelectedInv(invData[0]);
-          setCompareList([invData[0].id, invData[1]?.id || invData[0].id]);
-        }
-      } catch (err) {
-        console.error("Failed to load backend data:", err);
-      } finally {
-        setLoading(false);
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [invRes, rankRes, domRes] = await Promise.all([
+        fetch(`${API_BASE}/api/investigations`),
+        fetch(`${API_BASE}/api/rankings`),
+        fetch(`${API_BASE}/api/domain`)
+      ]);
+
+      if (!invRes.ok || !rankRes.ok || !domRes.ok) {
+        throw new Error(`Data service responded with status: ${invRes.status}/${rankRes.status}/${domRes.status}`);
       }
+
+      const invData = await invRes.json();
+      const rankData = await rankRes.json();
+      const domData = await domRes.json();
+      setInvestigations(invData);
+      setRankings(rankData);
+      setDomain(domData);
+      if (invData.length > 0) {
+        setSelectedInv(invData[0]);
+        setCompareList([invData[0].id, invData[1]?.id || invData[0].id]);
+      }
+    } catch (err) {
+      console.error("Failed to load backend data:", err);
+      setError(err.message || "Could not reach the data service — check the backend container or connection.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadData();
   }, []);
 
@@ -135,6 +145,9 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userQ })
       });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const data = await res.json();
       setChatMessages(prev => [
         ...prev,
@@ -149,7 +162,7 @@ export default function App() {
         ...prev,
         {
           role: 'assistant',
-          text: "Encountered communication error with the SI engine. Ensure FastAPI backend is running on port 8000.",
+          text: "Encountered communication error with the SI engine. Please verify the backend service status.",
           citations: []
         }
       ]);
@@ -286,6 +299,47 @@ export default function App() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '1rem', color: 'var(--accent-cyan)' }}>
             <RefreshCw className="animate-spin" size={28} />
             <span className="font-mono">Loading NASA PSI Flight Data & Synthesis Models...</span>
+          </div>
+        ) : error ? (
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            height: '60vh', 
+            gap: '1.2rem', 
+            background: 'var(--bg-surface)', 
+            border: '1px solid var(--accent-orange)', 
+            borderRadius: '12px',
+            padding: '2rem',
+            textAlign: 'center'
+          }}>
+            <AlertTriangle size={48} color="var(--accent-orange)" />
+            <h2 className="font-heading" style={{ fontSize: '1.3rem', color: '#fff' }}>
+              Connection to NASA Data Service Unavailable
+            </h2>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '500px', fontSize: '0.9rem', lineHeight: '1.5' }}>
+              {error}
+            </p>
+            <button
+              onClick={loadData}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.7rem 1.4rem',
+                background: 'var(--accent-cyan)',
+                color: '#070b13',
+                border: 'none',
+                borderRadius: '6px',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                cursor: 'pointer'
+              }}
+            >
+              <RefreshCw size={16} />
+              Retry Connection
+            </button>
           </div>
         ) : (
           <>
