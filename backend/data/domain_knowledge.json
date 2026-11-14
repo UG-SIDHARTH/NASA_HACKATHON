@@ -1,0 +1,156 @@
+{
+  "flame_physics_in_microgravity": {
+    "title": "Microgravity Combustion Fundamentals: Buoyancy vs. Diffusion",
+    "description": "On Earth, gravity induces natural convection: hot, less dense combustion products rise rapidly, pulling in fresh oxygen from the base and stretching the flame into a flickering teardrop. In microgravity (free fall), buoyancy is virtually eliminated (~10^-6 g). Combustion transforms into a radially symmetric, diffusion-limited process. Without buoyant updrafts, the flame forms a ghostly blue, spherical structure. Temperatures are lower, reaction zones are broader, and oxygen transport relies on molecular diffusion or forced mechanical cabin airflow.",
+    "key_differences": [
+      {
+        "parameter": "Flame Shape",
+        "earth_1g": "Teardrop, elongated vertical plume",
+        "microgravity_0g": "Spherically symmetric, quiescent envelope"
+      },
+      {
+        "parameter": "Color & Radiation",
+        "earth_1g": "Bright yellow/orange from incandescent soot",
+        "microgravity_0g": "Pale ghostly blue, dominated by chemiluminescence"
+      },
+      {
+        "parameter": "Transport Mechanism",
+        "earth_1g": "Strong buoyant natural convection",
+        "microgravity_0g": "Slow molecular diffusion and forced ventilation flow"
+      },
+      {
+        "parameter": "Flame Temperature",
+        "earth_1g": "Higher (~1400 - 1800\u00b0C) due to fast mixing",
+        "microgravity_0g": "Lower (~900 - 1200\u00b0C), susceptible to radiative heat loss"
+      },
+      {
+        "parameter": "Soot & Smoke",
+        "earth_1g": "Small particles carried out rapidly by convection",
+        "microgravity_0g": "Long residence times; large chain agglomerates; low smoke point flow rates"
+      }
+    ]
+  },
+  "exploration_atmospheres": {
+    "title": "Spacecraft Atmospheric Environments & Flammability Risks",
+    "regimes": [
+      {
+        "environment": "Standard Earth Sea Level",
+        "pressure_psi": 14.7,
+        "pressure_kpa": 101.3,
+        "oxygen_pct": 20.9,
+        "pp_o2_kpa": 21.2,
+        "flammability_risk": "Baseline nominal rating for terrestrial standards (NASA-STD-6001)."
+      },
+      {
+        "environment": "International Space Station (ISS) Cabin",
+        "pressure_psi": 14.7,
+        "pressure_kpa": 101.3,
+        "oxygen_pct": 21.0,
+        "pp_o2_kpa": 21.3,
+        "flammability_risk": "Low risk under quiescent conditions; risk escalates with forced airflow (1-20 cm/s) from ventilation."
+      },
+      {
+        "environment": "Planned Artemis Lunar Base & Pressurized Rovers",
+        "pressure_psi": 10.2,
+        "pressure_kpa": 70.3,
+        "oxygen_pct": 34.0,
+        "pp_o2_kpa": 23.9,
+        "flammability_risk": "CRITICAL HAZARD: >40% relative increase in oxygen mole fraction. Drastically lowers ignition energy, accelerates flame spread rates, and renders many fire-resistant materials flammable."
+      },
+      {
+        "environment": "Mars Transit Habitat / Orion Pre-EVA Prep",
+        "pressure_psi": 8.2,
+        "pressure_kpa": 56.5,
+        "oxygen_pct": 34.0,
+        "pp_o2_kpa": 19.2,
+        "flammability_risk": "Low pressure reduces convective heat loss, while elevated O2 lowers extinction limits (LOC). Materials ignite and spread faster."
+      },
+      {
+        "environment": "EMU / xEMU Spacesuit (Extravehicular Mobility Unit)",
+        "pressure_psi": 4.3,
+        "pressure_kpa": 29.6,
+        "oxygen_pct": 100.0,
+        "pp_o2_kpa": 29.6,
+        "flammability_risk": "EXTREME HAZARD: Pure oxygen environment. Any spark or adiabatic heat can trigger explosive combustion. Zero tolerance for organic or combustible polymers."
+      }
+    ]
+  },
+  "historical_incidents": [
+    {
+      "mission": "Apollo 1 (AS-204)",
+      "date": "January 27, 1967",
+      "crew": "Virgil 'Gus' Grissom, Edward White II, Roger Chaffee",
+      "incident": "During a pre-launch 'plugs-out' test on Launch Pad 34, a spark from damaged electrical wiring ignited combustible materials (nylon, Velcro, Raschel netting) in a 100% pure oxygen atmosphere pressurized to 16.7 psi.",
+      "consequences": "All three astronauts perished from asphyxiation due to toxic gas inhalation and severe thermal burns within seconds. Cabin pressure surged to 29-37 psi, rupturing the command module shell.",
+      "lessons_learned": "Formed the cornerstone of NASA spacecraft fire safety: established NASA-STD-6001 strict flammability test protocol, mandated non-flammable cabin materials (Nomex, Teflon, fiberglass), replaced pure O2 ground tests with 60% O2 / 40% N2 mixed atmosphere, and redesigned the hatch to swing open outward in under 5 seconds."
+    },
+    {
+      "mission": "Apollo 13",
+      "date": "April 13, 1970",
+      "crew": "Jim Lovell, Jack Swigert, Fred Haise",
+      "incident": "During a routine cryogenic oxygen tank stirring procedure en route to the Moon, uninsulated copper heater wires sparked within liquid oxygen Service Module Tank No. 2, causing Teflon insulation to combust violently.",
+      "consequences": "The internal combustion caused a catastrophic pressure explosion blowing off outer Panel 4 of the Service Module, disabling two Fuel Cells, venting all oxygen stores, and aborting the lunar landing.",
+      "lessons_learned": "Complete redesign of cryogenic oxygen storage: replaced internal immersion heating switches, removed all Teflon insulation from direct contact with high-pressure supercritical oxygen, added isolated third backup oxygen tank and upgraded telemetry alarms."
+    },
+    {
+      "mission": "Mir Space Station Fire",
+      "date": "February 23, 1997",
+      "crew": "6 cosmonauts/astronauts (including Jerry Linenger & Valeri Polyakov)",
+      "incident": "A solid-fuel chemical oxygen generation canister (Vika / TGK 'candle' containing lithium perchlorate) caught fire in the Kvant-1 module, spewing an intense torch of molten metal and 2-foot flames with dense smoke.",
+      "consequences": "The fire burned for over 90 seconds, blocking escape access to one of the two docked Soyuz lifeboats. Dense toxic smoke filled the station; crew struggled with malfunctioning Russian IP-5 gas masks and expended three water-foam fire extinguishers before the fire suffocated.",
+      "lessons_learned": "Highlighted the terror of microgravity smoke obscuration: in zero-g, smoke does not rise to the ceiling but fills the entire 3D volume uniformly. Emphasized the vital need for reliable emergency breathing apparatus, multi-sensor smoke detectors, and independent redundant escape paths."
+    }
+  ],
+  "earth_spinoffs": [
+    {
+      "id": "spinoff-scba",
+      "title": "Lightweight Composite Firefighter Air Cylinders (SCBA)",
+      "nasa_origin": "NASA Johnson Space Center rocket motor filament-winding technology & Apollo/Skylab life support.",
+      "commercial_adaptation": "Scott Aviation and structural composite manufacturers produced lightweight aluminum cylinders wrapped in high-strength fiberglass and carbon-epoxy resin.",
+      "terrestrial_impact": "Reduced firefighter breathing apparatus tank weight by more than 33% (from 34 lbs steel to 20 lbs composite) and doubled pressure to 4,500 psi. Ergonomic harness redesign transferred load from shoulders to hips, dramatically reducing fatigue and cardiovascular injuries among municipal firefighters nationwide."
+    },
+    {
+      "id": "spinoff-fabrics",
+      "title": "High-Performance Thermal Firefighter Turnout Gear",
+      "nasa_origin": "Post-Apollo 1 search for non-flammable spacesuit fibers and Space Shuttle thermal protection materials.",
+      "commercial_adaptation": "Commercialization of Polybenzimidazole (PBI), Kevlar, and Nomex fiber matrices into multi-layered structural turnout gear.",
+      "terrestrial_impact": "Protects firefighters from thermal flashover temperatures exceeding 1000\u00b0C without melting, dripping, or off-gassing toxic fumes, now the universal NFPA gold standard for structural firefighting clothing."
+    },
+    {
+      "id": "spinoff-smoke-detector",
+      "title": "Dust-Discriminating Industrial Smoke & Particle Detectors",
+      "nasa_origin": "Skylab, Space Shuttle, and ISS SAME/DAFT microgravity aerosol research.",
+      "commercial_adaptation": "Optical and laser nephelometer systems engineered with dual-wavelength scattering algorithms to discriminate between irregularly shaped mineral dust particles and spherical/chain smoke aerosols.",
+      "terrestrial_impact": "Eliminated false alarms in extreme dust environments such as coal mines, agricultural processing facilities, industrial milling, and subway tunnels."
+    },
+    {
+      "id": "spinoff-water-mist",
+      "title": "Fine Water Mist Fire Extinguishing Systems",
+      "nasa_origin": "ISS Portable Fire Extinguisher (PFE) microgravity fine water-mist research (tested in CIR/FLEX).",
+      "commercial_adaptation": "Clean mist nozzles discharging ultra-fine atomized water droplets (50-100 microns).",
+      "terrestrial_impact": "Replaces ozone-depleting Halon gas extinguishers in marine shipping, museums, data centers, and aircraft cabins. Rapidly evaporates, extracting massive latent heat without flooding sensitive electronics."
+    }
+  ],
+  "next_gen_controls": [
+    {
+      "category": "Pre-Fire Early Detection",
+      "technology": "Multi-Wavelength Optical & Chemiluminescent Detectors",
+      "description": "Next-generation detectors capable of detecting ultraviolet OH* and formaldehyde CH2O chemiluminescence signatures to reveal invisible 'cool flames' and microgravity wire overheating long before visible smoke accumulates."
+    },
+    {
+      "category": "Active Aerodynamic Isolation",
+      "technology": "Smart Automated Ventilation Stoppage (Zero-Flow Choking)",
+      "description": "Automated rack-level damper shutoff systems. In microgravity, completely stopping ventilation cuts off convective oxygen delivery, forcing flames into a quiescent diffusion-limited regime where radiative cooling extinguishes the flame."
+    },
+    {
+      "category": "Non-Contaminating Suppression",
+      "technology": "High-Voltage Electric Field Flame Quenching (E-FIELD)",
+      "description": "Utilizing directed electric fields to induce ionic winds that destabilize flame envelopes and extinguish electrical rack fires without spraying liquid or chemical agents that contaminate spacecraft life-support scrubbers."
+    },
+    {
+      "category": "Cabin Atmospheric Venting",
+      "technology": "Depressurization & Rapid Inerting",
+      "description": "Saffire-derived protocol: controlled cabin depressurization down to vacuum or rapid nitrogen-dilution purge to extinguish large-scale structural fires."
+    }
+  ]
+}

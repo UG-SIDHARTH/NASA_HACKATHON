@@ -1,0 +1,434 @@
+import json
+
+# Comprehensive database of NASA Microgravity Combustion investigations compiled from:
+# 1. 'A Researcher's Guide to International Space Station Combustion Science'
+# 2. NASA Physical Sciences Informatics (PSI) repository & Saffire project reports
+# 3. Spacecraft Fire Safety and historical incident data
+
+investigations = [
+    {
+        "id": "bass-1",
+        "name": "BASS",
+        "full_name": "Burning and Suppression of Solids - I",
+        "category": "solid_flammability",
+        "hardware": "Microgravity Science Glovebox (MSG) / BASS Flow Duct",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2012 - 2013",
+        "objectives": "Examine the burning and extinction characteristics of a wide variety of fuel samples in microgravity. Determine extinction limits (LOC - Limiting Oxygen Concentration) and forced airflow limits to establish real spacecraft materials flammability guidelines compared to 1g tests.",
+        "fuels": {
+            "type": "Solids (Plastics & Polymers)",
+            "materials": ["Polymethylmethacrylate (PMMA / acrylic)", "Cotton-fiberglass fabric blends", "Polyethylene / Nomex fabric samples"],
+            "geometry": "Flat sheets (1 cm wide x 10 cm long) and round rods (up to 3.8 cm length)"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-6 g)",
+            "oxygen_concentration_pct": [16.0, 21.0, 23.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [0.5, 1.0, 2.5, 5.0, 10.0, 35.0],
+            "flow_direction": "Concurrent and opposed flow"
+        },
+        "variables": {
+            "varied": ["Forced airflow velocity (0.5 to 35 cm/s)", "Sample thickness and geometry (flat vs rod)", "Oxygen concentration"],
+            "controlled": ["Nitrogen inert balance", "Ambient cabin pressure (1 atm)", "Chamber internal geometry"]
+        },
+        "sensors_and_measurements": [
+            "High-definition color video cameras (top and profile view)",
+            "Thermocouples along sample holder and downstream duct",
+            "Anemometer flow velocity probes",
+            "Chamber oxygen and CO2 electrochemical sensors",
+            "Post-burn sample mass loss and char measurement"
+        ],
+        "key_findings": "Demonstrated that slow airflow (1 to 5 cm/s) can sustain robust flames in microgravity that would self-extinguish in quiescent conditions due to lack of buoyancy. Thin samples burn faster concurrent to flow, while thicker materials exhibit lower extinction speeds.",
+        "fire_safety_relevance": {
+            "prevention": "Direct input into NASA-STD-6001 Test 1 (upward flame propagation), showing standard 1g ratings may underestimate microgravity flammability in low ventilation zones.",
+            "detection": "Provides soot and aerosol emission signatures during low-flow smoldering and flaming transitions.",
+            "suppression": "Establishes critical airflow cut-off speeds where turning off ventilation fans can choke the flame or trigger extinction.",
+            "crew_environments": ["ISS Cabin", "Artemis Gateway", "Pressurized Rovers", "Lunar/Mars Hab"]
+        },
+        "relevance_score": 96,
+        "relevance_explanation": "Directly evaluates solid material flammability (plastics & fabrics) found inside spacecraft cabins under forced ventilation, mapping exact extinction boundaries and ventilation cut-offs."
+    },
+    {
+        "id": "bass-2",
+        "name": "BASS-II",
+        "full_name": "Burning and Suppression of Solids - II",
+        "category": "solid_flammability",
+        "hardware": "Microgravity Science Glovebox (MSG)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2014 - 2015",
+        "objectives": "Expand the BASS solid fuel matrix to test real crew fabrics, silicone elastomers, and evaluate gaseous extinguishing agents (nitrogen and carbon dioxide inerting).",
+        "fuels": {
+            "type": "Solids & Flame-Retardant Composites",
+            "materials": ["Silicone sheets", "Cotton-Nomex blends", "PMMA rods with varying thermal thickness", "Flame retardant treated textiles"],
+            "geometry": "Flat strips (10 cm x 2 cm) and cylindrical rods"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-6 g)",
+            "oxygen_concentration_pct": [15.0, 18.0, 21.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [1.0, 2.0, 5.0, 15.0, 30.0],
+            "flow_direction": "Opposed and concurrent forced flow"
+        },
+        "variables": {
+            "varied": ["Extinguishing gas injection (CO2 and N2)", "Oxygen depletion down to extinction", "Airflow speed"],
+            "controlled": ["Initial chamber temperature (~22°C)", "Total chamber volume"]
+        },
+        "sensors_and_measurements": [
+            "Synchronized dual-view digital video recording",
+            "Fine-wire thermocouples",
+            "Extinguisher mass delivery transducers",
+            "Chamber gas chromatography telemetry"
+        ],
+        "key_findings": "Quantified the exact volume fraction of CO2 and N2 needed to extinguish opposed-flow flames on solid plastics in microgravity. Observed that flame extinction at low flows occurs via radiative heat loss rather than convective blowoff.",
+        "fire_safety_relevance": {
+            "prevention": "Calibrates safer polymer coatings and non-flammable textile compositions.",
+            "detection": "Identifies soot particle distribution as flame approaches radiative extinction.",
+            "suppression": "Directly guides the design of gaseous and clean-agent fire extinguisher systems for future space vehicles.",
+            "crew_environments": ["Spacecraft pressurized volumes", "Lunar habitat modules"]
+        },
+        "relevance_score": 94,
+        "relevance_explanation": "Crucial bridge between solid combustion physics and practical suppression mechanisms (CO2 dilution), measuring exact inerting thresholds in microgravity."
+    },
+    {
+        "id": "saffire-1-3",
+        "name": "Saffire-I/II/III",
+        "full_name": "Spacecraft Fire Safety Experiments I, II, and III",
+        "category": "large_scale_fire_safety",
+        "hardware": "Cygnus Commercial Resupply Cargo Vehicle (Post-unberth free flyer)",
+        "flight_platform": "Uncrewed Cygnus Spacecraft (Orbital ATK / Northrop Grumman)",
+        "dates": "2016 - 2018",
+        "objectives": "Conduct the first large-scale, realistic spacecraft fire investigations on materials of spacecraft-relevant scale (up to 1 meter long) without putting astronauts at risk.",
+        "fuels": {
+            "type": "Large-Scale Solids & Spacecraft Fabrics",
+            "materials": ["Cotton-fiberglass blend (Sibal cloth: 75% cotton, 25% fiberglass)", "Plexiglas (PMMA) slabs (0.4 m x 1.0 m)", "Nomex fabric swatches", "Silicone rubber"],
+            "geometry": "Large single-sheet samples (0.4 m wide x 1.0 m long) and multi-material carousels (5 cm x 30 cm cards)"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-5 g)",
+            "oxygen_concentration_pct": [21.0],
+            "pressure_psi": [10.2, 14.7],
+            "pressure_kpa": [70.3, 101.3],
+            "airflow_speed_cm_s": [10.0, 20.0, 25.0],
+            "flow_direction": "Concurrent forced air flow through flow duct"
+        },
+        "variables": {
+            "varied": ["Material scale (bench vs 1m large slab)", "Airflow velocity across duct", "Chamber pressure (testing 10.2 psi exploration atmosphere)"],
+            "controlled": ["Igniter energy pulse", "Sample orientation in duct"]
+        },
+        "sensors_and_measurements": [
+            "Calibrated radiometers and broadband heat flux sensors",
+            "Dual thermocouple rakes (flame front and gas phase)",
+            "High-resolution still photography and real-time video",
+            "Oxygen, carbon monoxide (CO), and CO2 gas analyzers",
+            "Pressure transducers and smoke particulate sensors"
+        ],
+        "key_findings": "Flame spread rates over large sheets in microgravity stabilized to a steady rate without upward buoyant acceleration. However, flames generated substantial CO and soot, proving that standard small-scale bench tests can underestimate flame spread in moderate forced flows.",
+        "fire_safety_relevance": {
+            "prevention": "Defines true spacecraft material screening standards for large components (e.g. acoustic blankets, storage lockers).",
+            "detection": "Demonstrated the rapid rise in CO and obscuration before catastrophic thermal runaway.",
+            "suppression": "Validates vehicle depressurization and cabin venting protocols for extinguishing large fires.",
+            "crew_environments": ["Orion Capsule", "Commercial LEO Stations", "Lunar Transfer Vehicles"]
+        },
+        "relevance_score": 98,
+        "relevance_explanation": "Gold-standard data for full-scale spacecraft fires. Tests real exploration pressures (10.2 psi) and large sample dimensions impossible on the ISS crew cabin."
+    },
+    {
+        "id": "flex-1-2",
+        "name": "FLEX / FLEX-2",
+        "full_name": "Flame Extinguishment Experiment & FLEX-2",
+        "category": "liquid_droplet_suppression",
+        "hardware": "Combustion Integrated Rack (CIR) / Multi-user Droplet Combustion Apparatus (MDCA)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2009 - 2014",
+        "objectives": "Study isolated liquid droplet combustion, spherical symmetry burning, soot production, and discover the chemical kinetics of low-temperature 'cool flame' burning and extinction.",
+        "fuels": {
+            "type": "Hydrocarbon Liquid Droplets",
+            "materials": ["n-Heptane", "Methanol", "n-Decane", "Heptane/hexanol mixtures"],
+            "geometry": "Free-floating and tethered spherical droplets (1.5 mm to 5.0 mm diameter)"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (< 10^-6 g)",
+            "oxygen_concentration_pct": [14.0, 18.0, 21.0, 30.0],
+            "pressure_psi": [7.3, 14.7, 44.1],
+            "pressure_kpa": [50.0, 101.3, 304.0],
+            "airflow_speed_cm_s": [0.0],
+            "flow_direction": "Quiescent (no forced flow; pure diffusion)"
+        },
+        "variables": {
+            "varied": ["Droplet size (1.5 - 5 mm)", "Inert diluent gas (Nitrogen, Helium, Carbon Dioxide)", "Ambient pressure and O2 concentration"],
+            "controlled": ["Spherical droplet deployment", "Chamber temperature"]
+        },
+        "sensors_and_measurements": [
+            "High-speed color camera (flame diameter and radiation)",
+            "Infrared/UV radiometers (hydroxyl OH* and CH* radical chemiluminescence)",
+            "Backlit high-magnification droplet tracking optics",
+            "Chamber pressure transducers"
+        ],
+        "key_findings": "Historic discovery: after hot, visible flames extinguish, droplets of n-heptane continue to burn invisibly via low-temperature 'cool flame' kinetics (~600°C) without soot formation. Discovered exact limits where CO2 and Helium quench flames.",
+        "fire_safety_relevance": {
+            "prevention": "Revealed that liquid leaks or fuel remnants can continue burning invisibly undetected by standard optical sensors.",
+            "detection": "Proves the critical necessity for multi-spectral or thermal IR sensors capable of detecting cool flames.",
+            "suppression": "Quantifies the effectiveness of carbon dioxide vs helium extinguishing diluents.",
+            "crew_environments": ["Spacecraft propulsion bay", "Experiment life support systems", "Planetary rovers"]
+        },
+        "relevance_score": 92,
+        "relevance_explanation": "Revolutionized combustion physics by proving cool flames can sustain combustion after visible flameout, critical for preventing secondary reignition in space."
+    },
+    {
+        "id": "same-r",
+        "name": "SAME / SAME-R",
+        "full_name": "Smoke Aerosol Measurement Experiment & SAME-Reflight",
+        "category": "smoke_detection",
+        "hardware": "Microgravity Science Glovebox (MSG)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2007 - 2011",
+        "objectives": "Characterize the physical properties, particle size distribution, and agglomeration dynamics of smoke and aerosols produced by pyrolyzing and burning common spacecraft materials in microgravity.",
+        "fuels": {
+            "type": "Spacecraft Materials & Electronics",
+            "materials": ["Kapton electrical wire insulation", "Silicone rubber tubing", "Cotton cloth (pyrolyzed)", "Teflon (PTFE) insulation", "Pyrex/phenolic circuit boards"],
+            "geometry": "Pellets and wire segments placed in electrical tube furnace"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-6 g)",
+            "oxygen_concentration_pct": [21.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [5.0, 10.0, 20.0],
+            "flow_direction": "Sample delivery carrier flow"
+        },
+        "variables": {
+            "varied": ["Heating rate (slow overheat smoldering vs rapid flaming pyrolysis)", "Material type", "Carrier gas velocity"],
+            "controlled": ["Furnace core dimensions", "Dilution ratio"]
+        },
+        "sensors_and_measurements": [
+            "Scanning Mobility Particle Sizer (SMPS) for particle diameter (15 nm to 1000 nm)",
+            "Condensation Particle Counter (CPC)",
+            "Tapered Element Oscillating Microbalance (TEOM) for aerosol mass concentration",
+            "Transmission Electron Microscope (TEM) thermal precipitator grids for morphology"
+        ],
+        "key_findings": "Smoke particles produced in microgravity are significantly LARGER in mean diameter and exhibit more chain-like agglomeration than smoke produced under 1g. Because buoyant updrafts are absent, soot residence time is prolonged, causing larger aggregates.",
+        "fire_safety_relevance": {
+            "prevention": "Identifies early thermal degradation signatures of electrical wire insulation before open flame.",
+            "detection": "DIRECT FOUNDATION FOR NEXT-GEN SMOKE DETECTORS: Terrestrial smoke detectors calibrated for tiny 1g smoke particles can fail or trigger false alarms in space. SAME data defines optical scattering wavelengths for space-grade detectors.",
+            "suppression": "Helps determine aerosol clearing filtration requirements following fire events.",
+            "crew_environments": ["All crewed space vehicles (ISS, Gateway, Artemis Orion, Lunar Base)"]
+        },
+        "relevance_score": 97,
+        "relevance_explanation": "Vital for fire detection: definitively showed that space smoke particle size is larger, directly dictating how ISS and Artemis cabin smoke alarms are calibrated."
+    },
+    {
+        "id": "acme-bre",
+        "name": "ACME - BRE",
+        "full_name": "Advanced Combustion via Microgravity Experiments - Burning Rate Emulator",
+        "category": "solid_flammability",
+        "hardware": "Combustion Integrated Rack (CIR)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2017 - 2021",
+        "objectives": "Simulate the burning and extinction of solid materials using gaseous fuels flowing through porous flat and cylindrical burners. Emulate heat feedback, char formation, and determine exact limiting oxygen concentrations (LOC) for extinction.",
+        "fuels": {
+            "type": "Emulated Solid Fuels (Porous Gaseous Burners)",
+            "materials": ["Methane", "Ethylene", "Propane (emulating PMMA, polyethylene, and wood)"],
+            "geometry": "Porous flat disk burners (2.5 cm and 5.0 cm diameter) and cylindrical burners"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (< 10^-6 g)",
+            "oxygen_concentration_pct": [14.0, 17.0, 21.0, 30.0, 35.0],
+            "pressure_psi": [10.2, 14.7, 18.0],
+            "pressure_kpa": [70.3, 101.3, 124.0],
+            "airflow_speed_cm_s": [0.0, 5.0, 15.0],
+            "flow_direction": "Opposed and cross-flow"
+        },
+        "variables": {
+            "varied": ["Oxygen mole fraction (14% to 35% exploration atmosphere)", "Ambient pressure (10.2 psi Moon base standard)", "Fuel mass flow rate", "Radiation heat loss parameters"],
+            "controlled": ["Burner surface temperature", "CIR chamber volume (100 L)"]
+        },
+        "sensors_and_measurements": [
+            "Color high-resolution cameras with narrowband CH* and soot filters",
+            "Calibrated broadband radiometers (total flame heat radiation)",
+            "Array of fine wire platinum/rhodium thermocouples above burner",
+            "Spectrometric flame emission monitoring",
+            "Laser absorption gas analyzers"
+        ],
+        "key_findings": "Mapped the precise Limiting Oxygen Concentration (LOC) for extinction at elevated oxygen (up to 35%) and reduced pressures (10.2 psi). Established that solid fuel burning rate in exploration atmospheres is intensely sensitive to low airflow velocities (2-10 cm/s).",
+        "fire_safety_relevance": {
+            "prevention": "Directly models fire hazards for Artemis Lunar Habitat and Mars Transit Habitats operating at 34% O2 / 8.2 psi and 30% O2 / 10.2 psi.",
+            "detection": "Quantifies heat release rate and radiant signatures in exploration atmospheres.",
+            "suppression": "Determines the oxygen depletion required to achieve flame blowout or radiative extinction.",
+            "crew_environments": ["Artemis Lunar Base", "Pressurized Rover", "Mars Transit Hab"]
+        },
+        "relevance_score": 99,
+        "relevance_explanation": "Highest relevance for Exploration Atmospheres: tests the exact reduced pressure (10.2 psi) and elevated oxygen (30-34% O2) targeted for Artemis lunar habitats and rovers."
+    },
+    {
+        "id": "acme-cfi-g",
+        "name": "ACME - CFI-G",
+        "full_name": "ACME - Cool Flames Investigation with Gases",
+        "category": "cool_flames_suppression",
+        "hardware": "Combustion Integrated Rack (CIR)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2019 - 2022",
+        "objectives": "Create and observe spherical, premixed and non-premixed gaseous 'inside-out' cool diffusion flames at high oxygen concentrations (up to 85% O2) to isolate low-temperature oxidation kinetics without soot fouling.",
+        "fuels": {
+            "type": "Gaseous Fuels in Hyperoxic Conditions",
+            "materials": ["Propane / n-Butane mixed with Nitrogen, Argon, and Carbon Dioxide"],
+            "geometry": "Spherical porous burner (6.35 mm diameter)"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (< 10^-6 g)",
+            "oxygen_concentration_pct": [21.0, 40.0, 60.0, 85.0],
+            "pressure_psi": [14.7, 22.0],
+            "pressure_kpa": [101.3, 151.7],
+            "airflow_speed_cm_s": [0.0],
+            "flow_direction": "Quiescent inside-out radial diffusion"
+        },
+        "variables": {
+            "varied": ["Oxygen enrichment (up to 85% O2)", "Fuel gas dilution with CO2 and He", "Igniter electrical pulse energy"],
+            "controlled": ["Burner diameter", "Ambient chamber temperature"]
+        },
+        "sensors_and_measurements": [
+            "Intensified CCD camera (ICCD) with ultraviolet filters for OH* and CH2O chemiluminescence",
+            "High-sensitivity radiometers",
+            "Chamber gas pressure transducers"
+        ],
+        "key_findings": "Observed sustained gas-fueled cool flames at elevated oxygen levels. Proved that cool flames can stabilize in high-oxygen environments (such as spacesuit or oxygen recharge lockers) at temperatures far lower than expected for hot combustion (~400°C - 600°C).",
+        "fire_safety_relevance": {
+            "prevention": "Critical warning for Extravehicular Activity (EVA) spacesuit umbilicals and 100% O2 recharge systems (4.3 to 15 psi).",
+            "detection": "Cool flames emit almost zero visible radiation; standard crew optical smoke detectors are completely blind to them.",
+            "suppression": "Requires specific chemical suppression because cooling alone may fail to stop low-temperature radical chain branches.",
+            "crew_environments": ["Spacesuits / EVA Airlocks", "O2 Generation / Cryogenic Systems"]
+        },
+        "relevance_score": 95,
+        "relevance_explanation": "Crucial for high-oxygen space systems (spacesuits operate at 100% O2). Demonstrates invisible low-temperature burning hazards in hyperoxic conditions."
+    },
+    {
+        "id": "acme-efield",
+        "name": "ACME - E-FIELD Flames",
+        "full_name": "ACME - Electric-Field Effects on Flammability and Combustion",
+        "category": "advanced_suppression",
+        "hardware": "Combustion Integrated Rack (CIR)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2018 - 2021",
+        "objectives": "Investigate how electric fields (AC and DC high-voltage electrodes) can manipulate ion drift, suppress soot formation, and physically extinguish or destabilize microgravity flames.",
+        "fuels": {
+            "type": "Gaseous Hydrocarbon Flames",
+            "materials": ["Methane", "Ethylene with nitrogen dilution"],
+            "geometry": "Gas co-flow burner between conductive mesh plates"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (< 10^-6 g)",
+            "oxygen_concentration_pct": [21.0, 30.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [0.0, 10.0],
+            "flow_direction": "Axial burner flow between parallel electrodes"
+        },
+        "variables": {
+            "varied": ["Applied voltage (0 to 10 kV DC, variable AC frequency)", "Electrode geometry", "Fuel flow rate"],
+            "controlled": ["Chamber ambient gas composition", "Burner orifice diameter"]
+        },
+        "sensors_and_measurements": [
+            "Current-voltage high speed logging (nano-ammeter for ionic current)",
+            "Radiometers and UV/VIS cameras for flame deflection angle",
+            "Laser extinction for soot volume fraction"
+        ],
+        "key_findings": "Proved that electric fields apply body forces directly to chemi-ions inside the flame front, creating an 'ionic wind' capable of extinguishing or blowing out flames without discharging chemical extinguishing gases.",
+        "fire_safety_relevance": {
+            "prevention": "Understands electrostatic ignition hazards in dry spacecraft atmospheres.",
+            "detection": "Ionic current monitoring can detect flame initiation milliseconds faster than optical detectors.",
+            "suppression": "Pioneers clean, non-contaminating electrical fire suppression for sensitive electronics racks and server bays where chemical foams or water mists would permanently ruin equipment.",
+            "crew_environments": ["Avionics bays", "Pressurized server racks", "ISS and future Lunar Gateway payload racks"]
+        },
+        "relevance_score": 91,
+        "relevance_explanation": "Offers next-generation suppression capabilities: extinguishing flames using electrical field manipulation rather than depleting chemical fire extinguishers."
+    },
+    {
+        "id": "spice-slice",
+        "name": "SPICE / SLICE",
+        "full_name": "Smoke Point In Co-flow Experiment & Structure & Liftoff In Combustion Experiment",
+        "category": "smoke_soot_formation",
+        "hardware": "Microgravity Science Glovebox (MSG)",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2010 - 2012",
+        "objectives": "Determine the smoke point (maximum flame length without soot emission) of gaseous flames in microgravity, and measure flame liftoff and blowoff stability limits in low-speed co-flowing air.",
+        "fuels": {
+            "type": "Gaseous Hydrocarbons",
+            "materials": ["Methane", "Ethylene", "Propane", "Ethane"],
+            "geometry": "Axial tube burner (0.8 mm to 1.6 mm nozzle ID) in transparent MSG flow duct"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-6 g)",
+            "oxygen_concentration_pct": [21.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [2.0, 5.0, 10.0, 20.0],
+            "flow_direction": "Co-flow parallel to jet axis"
+        },
+        "variables": {
+            "varied": ["Fuel jet velocity", "Co-flow air speed (fan-driven duct)", "Burner tube diameter"],
+            "controlled": ["Glovebox atmospheric composition", "Ambient temperature"]
+        },
+        "sensors_and_measurements": [
+            "Color video cameras (flame length and liftoff height)",
+            "Narrowband optical filters for soot radiation",
+            "Flow meter transducers and mass flow controllers"
+        ],
+        "key_findings": "The microgravity smoke point occurs at much lower fuel flow rates than in normal gravity. Because buoyant acceleration is absent, residence time in the hot flame zone increases by an order of magnitude, drastically enhancing soot nucleation and soot yield.",
+        "fire_safety_relevance": {
+            "prevention": "Shows that even tiny, low-rate fuel leaks produce heavy, toxic soot and carbon monoxide in space.",
+            "detection": "Establishes soot release threshold models as a function of ventilation co-flow speed.",
+            "suppression": "Informs life support post-fire scrubbers and smoke particulate clearing systems.",
+            "crew_environments": ["ISS Life Support Systems", "Payload experiment racks"]
+        },
+        "relevance_score": 88,
+        "relevance_explanation": "Crucial baseline for soot formation: proves space flames produce heavy soot at much smaller flame sizes due to extended residence times."
+    },
+    {
+        "id": "daft-1-2",
+        "name": "DAFT / DAFT-2",
+        "full_name": "Dust and Aerosol Measurement Feasibility Test - I & II",
+        "category": "smoke_detection",
+        "hardware": "PFE (Portable Fire Extinguisher) test setup / ISS Cabin Handheld",
+        "flight_platform": "International Space Station (ISS)",
+        "dates": "2006 - 2008",
+        "objectives": "Evaluate commercial-off-the-shelf and custom particle detection instruments in the presence of space cabin dust vs actual combustion smoke, establishing false-alarm rejection criteria.",
+        "fuels": {
+            "type": "Aerosols and Test Smoke",
+            "materials": ["Arizona road dust (simulated cabin dust)", "Smoldering cotton wick", "Combustion aerosol generator"],
+            "geometry": "Aerosolized particulate suspensions"
+        },
+        "test_conditions": {
+            "gravity_level": "Microgravity (~10^-6 g)",
+            "oxygen_concentration_pct": [21.0],
+            "pressure_psi": [14.7],
+            "pressure_kpa": [101.3],
+            "airflow_speed_cm_s": [10.0],
+            "flow_direction": "Direct sampling pump suction"
+        },
+        "variables": {
+            "varied": ["Dust concentration vs smoke concentration", "Particle size cutoffs", "Sensor optical angles"],
+            "controlled": ["ISS cabin nominal air environment"]
+        },
+        "sensors_and_measurements": [
+            "P-Trak ultrafine particle counter",
+            "DustTrak light-scattering aerosol monitor",
+            "ISS operational smoke detector test heads"
+        ],
+        "key_findings": "Demonstrated that high-velocity cabin air ventilation stirs up substantial micro-debris and dust that can trigger nuisance alarms on ordinary terrestrial optical sensors unless dual-wavelength or size-discriminating optics are deployed.",
+        "fire_safety_relevance": {
+            "prevention": "Prevents catastrophic nuisance alarm fatigue among astronauts.",
+            "detection": "Proved the viability of optical scattering discrimination between irregular dust particles and spherical/chain smoke agglomerates.",
+            "suppression": "Directly informed the upgraded ISS smoke detector architecture and terrestrial mining safety spinoffs.",
+            "crew_environments": ["ISS Hab Modules", "Artemis Lunar Base (Lunar dust contamination is a major hazard!)"]
+        },
+        "relevance_score": 93,
+        "relevance_explanation": "Directly addresses one of the most perilous spaceflight risks: distinguishing toxic combustion smoke from floating cabin dust and lunar regolith particles."
+    }
+]
+
+# Write to backend data directory
+with open("backend/data/investigations.json", "w", encoding="utf-8") as f:
+    json.dump(investigations, f, indent=2)
+
+print(f"Saved {len(investigations)} investigations to backend/data/investigations.json")
