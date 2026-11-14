@@ -82,7 +82,8 @@
       "crew": "Virgil 'Gus' Grissom, Edward White II, Roger Chaffee",
       "incident": "During a pre-launch 'plugs-out' test on Launch Pad 34, a spark from damaged electrical wiring ignited combustible materials (nylon, Velcro, Raschel netting) in a 100% pure oxygen atmosphere pressurized to 16.7 psi.",
       "consequences": "All three astronauts perished from asphyxiation due to toxic gas inhalation and severe thermal burns within seconds. Cabin pressure surged to 29-37 psi, rupturing the command module shell.",
-      "lessons_learned": "Formed the cornerstone of NASA spacecraft fire safety: established NASA-STD-6001 strict flammability test protocol, mandated non-flammable cabin materials (Nomex, Teflon, fiberglass), replaced pure O2 ground tests with 60% O2 / 40% N2 mixed atmosphere, and redesigned the hatch to swing open outward in under 5 seconds."
+      "lessons_learned": "Formed the cornerstone of NASA spacecraft fire safety: established NASA-STD-6001 strict flammability test protocol, mandated non-flammable cabin materials (Nomex, Teflon, fiberglass), replaced pure O2 ground tests with 60% O2 / 40% N2 mixed atmosphere, and redesigned the hatch to swing open outward in under 5 seconds.",
+      "image": "/images/apollo1.jpg"
     },
     {
       "mission": "Apollo 13",
@@ -90,7 +91,8 @@
       "crew": "Jim Lovell, Jack Swigert, Fred Haise",
       "incident": "During a routine cryogenic oxygen tank stirring procedure en route to the Moon, uninsulated copper heater wires sparked within liquid oxygen Service Module Tank No. 2, causing Teflon insulation to combust violently.",
       "consequences": "The internal combustion caused a catastrophic pressure explosion blowing off outer Panel 4 of the Service Module, disabling two Fuel Cells, venting all oxygen stores, and aborting the lunar landing.",
-      "lessons_learned": "Complete redesign of cryogenic oxygen storage: replaced internal immersion heating switches, removed all Teflon insulation from direct contact with high-pressure supercritical oxygen, added isolated third backup oxygen tank and upgraded telemetry alarms."
+      "lessons_learned": "Complete redesign of cryogenic oxygen storage: replaced internal immersion heating switches, removed all Teflon insulation from direct contact with high-pressure supercritical oxygen, added isolated third backup oxygen tank and upgraded telemetry alarms.",
+      "image": "/images/apollo13.jpg"
     },
     {
       "mission": "Mir Space Station Fire",
@@ -98,7 +100,8 @@
       "crew": "6 cosmonauts/astronauts (including Jerry Linenger & Valeri Polyakov)",
       "incident": "A solid-fuel chemical oxygen generation canister (Vika / TGK 'candle' containing lithium perchlorate) caught fire in the Kvant-1 module, spewing an intense torch of molten metal and 2-foot flames with dense smoke.",
       "consequences": "The fire burned for over 90 seconds, blocking escape access to one of the two docked Soyuz lifeboats. Dense toxic smoke filled the station; crew struggled with malfunctioning Russian IP-5 gas masks and expended three water-foam fire extinguishers before the fire suffocated.",
-      "lessons_learned": "Highlighted the terror of microgravity smoke obscuration: in zero-g, smoke does not rise to the ceiling but fills the entire 3D volume uniformly. Emphasized the vital need for reliable emergency breathing apparatus, multi-sensor smoke detectors, and independent redundant escape paths."
+      "lessons_learned": "Highlighted the terror of microgravity smoke obscuration: in zero-g, smoke does not rise to the ceiling but fills the entire 3D volume uniformly. Emphasized the vital need for reliable emergency breathing apparatus, multi-sensor smoke detectors, and independent redundant escape paths.",
+      "image": "/images/mir.jpg"
     }
   ],
   "earth_spinoffs": [
@@ -107,28 +110,32 @@
       "title": "Lightweight Composite Firefighter Air Cylinders (SCBA)",
       "nasa_origin": "NASA Johnson Space Center rocket motor filament-winding technology & Apollo/Skylab life support.",
       "commercial_adaptation": "Scott Aviation and structural composite manufacturers produced lightweight aluminum cylinders wrapped in high-strength fiberglass and carbon-epoxy resin.",
-      "terrestrial_impact": "Reduced firefighter breathing apparatus tank weight by more than 33% (from 34 lbs steel to 20 lbs composite) and doubled pressure to 4,500 psi. Ergonomic harness redesign transferred load from shoulders to hips, dramatically reducing fatigue and cardiovascular injuries among municipal firefighters nationwide."
+      "terrestrial_impact": "Reduced firefighter breathing apparatus tank weight by more than 33% (from 34 lbs steel to 20 lbs composite) and doubled pressure to 4,500 psi. Ergonomic harness redesign transferred load from shoulders to hips, dramatically reducing fatigue and cardiovascular injuries among municipal firefighters nationwide.",
+      "image": "/images/firefighter.jpg"
     },
     {
       "id": "spinoff-fabrics",
       "title": "High-Performance Thermal Firefighter Turnout Gear",
       "nasa_origin": "Post-Apollo 1 search for non-flammable spacesuit fibers and Space Shuttle thermal protection materials.",
       "commercial_adaptation": "Commercialization of Polybenzimidazole (PBI), Kevlar, and Nomex fiber matrices into multi-layered structural turnout gear.",
-      "terrestrial_impact": "Protects firefighters from thermal flashover temperatures exceeding 1000\u00b0C without melting, dripping, or off-gassing toxic fumes, now the universal NFPA gold standard for structural firefighting clothing."
+      "terrestrial_impact": "Protects firefighters from thermal flashover temperatures exceeding 1000\u00b0C without melting, dripping, or off-gassing toxic fumes, now the universal NFPA gold standard for structural firefighting clothing.",
+      "image": "/images/bass.jpg"
     },
     {
       "id": "spinoff-smoke-detector",
       "title": "Dust-Discriminating Industrial Smoke & Particle Detectors",
       "nasa_origin": "Skylab, Space Shuttle, and ISS SAME/DAFT microgravity aerosol research.",
       "commercial_adaptation": "Optical and laser nephelometer systems engineered with dual-wavelength scattering algorithms to discriminate between irregularly shaped mineral dust particles and spherical/chain smoke aerosols.",
-      "terrestrial_impact": "Eliminated false alarms in extreme dust environments such as coal mines, agricultural processing facilities, industrial milling, and subway tunnels."
+      "terrestrial_impact": "Eliminated false alarms in extreme dust environments such as coal mines, agricultural processing facilities, industrial milling, and subway tunnels.",
+      "image": "/images/smoke_detector.jpg"
     },
     {
       "id": "spinoff-water-mist",
       "title": "Fine Water Mist Fire Extinguishing Systems",
       "nasa_origin": "ISS Portable Fire Extinguisher (PFE) microgravity fine water-mist research (tested in CIR/FLEX).",
       "commercial_adaptation": "Clean mist nozzles discharging ultra-fine atomized water droplets (50-100 microns).",
-      "terrestrial_impact": "Replaces ozone-depleting Halon gas extinguishers in marine shipping, museums, data centers, and aircraft cabins. Rapidly evaporates, extracting massive latent heat without flooding sensitive electronics."
+      "terrestrial_impact": "Replaces ozone-depleting Halon gas extinguishers in marine shipping, museums, data centers, and aircraft cabins. Rapidly evaporates, extracting massive latent heat without flooding sensitive electronics.",
+      "image": "/images/droplet.jpg"
     }
   ],
   "next_gen_controls": [
