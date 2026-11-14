@@ -412,7 +412,7 @@ export default function App() {
           <>
             {/* TAB 1: INVESTIGATIONS BROWSER */}
             {activeTab === 'investigations' && (
-              <div className="investigations-grid" style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: '1.5rem', height: 'calc(100vh - 350px)' }}>
+              <div className="investigations-grid" style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: '1.5rem', minHeight: '600px', maxHeight: 'calc(100vh - 200px)', overflow: 'auto' }}>
                 {/* Left Sidebar List */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'var(--bg-surface)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
                   <div style={{ position: 'relative' }}>
@@ -437,7 +437,7 @@ export default function App() {
 
                   {/* Filter Pills */}
                   <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                    {['all', 'solid_flammability', 'smoke_detection', 'liquid_droplet_suppression', 'cool_flames_suppression', 'large_scale_fire_safety'].map(cat => (
+                    {['all', ...new Set(investigations.map(i => i.category))].map(cat => (
                       <button
                         key={cat}
                         onClick={() => setFilterCategory(cat)}
@@ -914,7 +914,7 @@ export default function App() {
                     <input
                       type="range"
                       min="14"
-                      max="85"
+                      max="100"
                       step="1"
                       value={simOxygen}
                       onChange={e => setSimOxygen(e.target.value)}
@@ -924,7 +924,7 @@ export default function App() {
                       <span>14% (Extinction)</span>
                       <span>21% (ISS/Earth)</span>
                       <span>34% (Moon Hab)</span>
-                      <span>85% (EVA)</span>
+                      <span>100% (EVA)</span>
                     </div>
                   </div>
 
@@ -1097,7 +1097,7 @@ export default function App() {
 
             {/* TAB 5: SUPER-INTELLIGENCE (SI) ASSISTANT */}
             {activeTab === 'assistant' && (
-              <div className="assistant-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '1.5rem', height: 'calc(100vh - 350px)' }}>
+              <div className="assistant-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '1.5rem', minHeight: '600px', maxHeight: 'calc(100vh - 200px)', overflow: 'auto' }}>
                 {/* Chat Stream Window */}
                 <div style={{ background: 'var(--bg-surface)', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

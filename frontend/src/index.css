@@ -164,3 +164,10 @@ button, select, input {
     white-space: nowrap;
   }
 }
+
+/* Tablet responsive utilities (768px to 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .spinoffs-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
