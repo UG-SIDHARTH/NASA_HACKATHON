@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: flame_in_freefall_backend
     ports:
-      - "8000:8000"
+      - "3003:3003"
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile
     container_name: flame_in_freefall_frontend
     ports:
-      - "3000:80"
+      - "3002:80"
     depends_on:
       - backend
     restart: unless-stopped

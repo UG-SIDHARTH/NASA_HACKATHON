@@ -33,7 +33,7 @@ import {
   CartesianGrid
 } from 'recharts';
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://localhost:3003";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('investigations');
