@@ -12,6 +12,16 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OMP_NUM_THREADS=1
+      - OPENBLAS_NUM_THREADS=1
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     restart: unless-stopped
 
   frontend:
@@ -21,6 +31,14 @@ services:
     container_name: flame_in_freefall_frontend
     ports:
       - "3002:80"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 384M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
     depends_on:
       - backend
     restart: unless-stopped
