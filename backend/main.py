@@ -14,11 +14,12 @@ if BASE_DIR not in sys.path:
 
 from services.si_service import SuperIntelligenceService
 from services.flammability_modeler import FlammabilityModeler
+from services.flammability_model import ml_service
 
 app = FastAPI(
     title="NASA Flame in Freefall SI Dashboard API",
     description="Super-Intelligence Powered Fire Safety Insights from NASA Microgravity Combustion Science",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 # Enable CORS for local Vite dev and Docker environments
@@ -39,11 +40,14 @@ si_service = SuperIntelligenceService(INVESTIGATIONS_FILE, DOMAIN_FILE)
 class SIQueryRequest(BaseModel):
     query: str
 
-class FlammabilityQueryRequest(BaseModel):
+class FlammabilityRequest(BaseModel):
+    material_type: Optional[str] = "fabric"
+    material: Optional[str] = None # Support backwards compatibility
     oxygen_pct: float = 21.0
     pressure_psi: float = 14.7
     airflow_cm_s: float = 10.0
-    material: str = "thin_fabric"
+    sample_thickness_mm: Optional[float] = 3.0
+    gravity_level: Optional[str] = "microgravity"
 
 @app.get("/")
 def root():
@@ -129,10 +133,22 @@ def ask_super_intelligence(req: SIQueryRequest):
     return si_service.answer_query(req.query)
 
 @app.post("/api/predict/flammability")
-def predict_flammability(req: FlammabilityQueryRequest):
-    return FlammabilityModeler.predict(
+def predict_flammability(req: FlammabilityRequest):
+    """
+    Predicts flammability outcomes using the trained ML model (GradientBoostingRegressor).
+    Returns: loc_predicted, ignition_risk_score, flame_spread_rate, soot_yield,
+             plus a human-readable risk_level (LOW/MODERATE/HIGH/CRITICAL),
+             supporting investigations, and model confidence indicator.
+    """
+    mat = req.material_type or req.material or "fabric"
+    thickness = req.sample_thickness_mm if req.sample_thickness_mm is not None else 3.0
+    gravity = req.gravity_level or "microgravity"
+
+    return ml_service.predict(
+        material_type=mat,
         oxygen_pct=req.oxygen_pct,
         pressure_psi=req.pressure_psi,
         airflow_cm_s=req.airflow_cm_s,
-        material=req.material
+        sample_thickness_mm=thickness,
+        gravity_level=gravity
     )

@@ -47,11 +47,13 @@ export default function App() {
   const [selectedInv, setSelectedInv] = useState(null);
   const [compareList, setCompareList] = useState([]);
 
-  // Predictive Modeling State
+  // Predictive Modeling State (Trained ML Model inputs)
+  const [simMaterial, setSimMaterial] = useState('fabric');
   const [simOxygen, setSimOxygen] = useState(34);
   const [simPressure, setSimPressure] = useState(10.2);
   const [simAirflow, setSimAirflow] = useState(5.0);
-  const [simMaterial, setSimMaterial] = useState('thin_fabric');
+  const [simThickness, setSimThickness] = useState(3.0);
+  const [simGravity, setSimGravity] = useState('microgravity');
   const [simResult, setSimResult] = useState(null);
   const [simLoading, setSimLoading] = useState(false);
 
@@ -112,10 +114,12 @@ export default function App() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            material_type: simMaterial,
             oxygen_pct: parseFloat(simOxygen),
             pressure_psi: parseFloat(simPressure),
             airflow_cm_s: parseFloat(simAirflow),
-            material: simMaterial
+            sample_thickness_mm: parseFloat(simThickness),
+            gravity_level: simGravity
           })
         });
         const data = await res.json();
@@ -127,7 +131,7 @@ export default function App() {
       }
     }
     runSim();
-  }, [simOxygen, simPressure, simAirflow, simMaterial]);
+  }, [simOxygen, simPressure, simAirflow, simMaterial, simThickness, simGravity]);
 
   // Handle SI Query
   const handleSendChat = async (e) => {
@@ -870,44 +874,97 @@ export default function App() {
               </div>
             )}
 
-            {/* TAB 4: PREDICTIVE FLAMMABILITY MODELER */}
+            {/* TAB 4: PREDICTIVE FLAMMABILITY MODELER (ML POWERED) */}
             {activeTab === 'modeler' && (
-              <div className="modeler-grid" style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: '1.5rem' }}>
+              <div className="modeler-grid" style={{ display: 'grid', gridTemplateColumns: '410px 1fr', gap: '1.5rem' }}>
                 {/* Modeler Controls */}
-                <div style={{ background: 'var(--bg-surface)', padding: '1.5rem', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                <div style={{ background: 'var(--bg-surface)', padding: '1.5rem', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
                   <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.8rem' }}>
-                    <h3 className="font-heading" style={{ fontSize: '1.1rem', color: '#fff' }}>Environmental Flight Inputs</h3>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Calibrated on NASA BASS-II, ACME-BRE and Saffire flight parameters.</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+                      <Cpu size={18} color="var(--accent-cyan)" />
+                      <h3 className="font-heading" style={{ fontSize: '1.1rem', color: '#fff' }}>ML Predictive Modeler</h3>
+                    </div>
+                    <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                      GradientBoostingRegressor trained on NASA PSI microgravity datasets (BASS, ACME-BRE, Saffire).
+                    </p>
                   </div>
 
-                  {/* Material selection */}
+                  {/* Material selection & Gravity selection */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                    <div>
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.35rem' }}>
+                        Material Specimen
+                      </label>
+                      <select
+                        value={simMaterial}
+                        onChange={e => setSimMaterial(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '0.55rem',
+                          background: 'var(--bg-primary)',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '6px',
+                          color: '#fff',
+                          fontSize: '0.82rem'
+                        }}
+                      >
+                        <option value="fabric">Cotton / Fiberglass (Sibal)</option>
+                        <option value="plastic">Cast PMMA (Acrylic)</option>
+                        <option value="composite">Epoxy Composite</option>
+                        <option value="wire_insulation">Kapton / Teflon Wire</option>
+                        <option value="silicone">Silicone Sealant</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.35rem' }}>
+                        Gravity Regime
+                      </label>
+                      <select
+                        value={simGravity}
+                        onChange={e => setSimGravity(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '0.55rem',
+                          background: 'var(--bg-primary)',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '6px',
+                          color: '#fff',
+                          fontSize: '0.82rem'
+                        }}
+                      >
+                        <option value="microgravity">Microgravity (0-g)</option>
+                        <option value="partial">Partial (Moon/Mars)</option>
+                        <option value="normal">Normal (Earth 1-g)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Sample Thickness Slider */}
                   <div>
-                    <label style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
-                      Material Specimen
-                    </label>
-                    <select
-                      value={simMaterial}
-                      onChange={e => setSimMaterial(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.6rem',
-                        background: 'var(--bg-primary)',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: '6px',
-                        color: '#fff',
-                        fontSize: '0.85rem'
-                      }}
-                    >
-                      <option value="thin_fabric">Cotton / Fiberglass Blend (Sibal Cloth)</option>
-                      <option value="thick_pmma">Cast Acrylic Plastic (PMMA Slab)</option>
-                      <option value="wire_insulation">Kapton / Teflon Wire Jacketing</option>
-                      <option value="silicone">Silicone Rubber / Sealant</option>
-                    </select>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
+                      <span style={{ color: '#fff' }}>Fuel Thickness</span>
+                      <span className="font-mono" style={{ color: 'var(--accent-cool)' }}>{simThickness} mm</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="1.0"
+                      max="10.0"
+                      step="0.5"
+                      value={simThickness}
+                      onChange={e => setSimThickness(e.target.value)}
+                      style={{ width: '100%', accentColor: 'var(--accent-cool)' }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
+                      <span>1 mm (Thermally thin)</span>
+                      <span>5 mm</span>
+                      <span>10 mm (Thermally thick)</span>
+                    </div>
                   </div>
 
                   {/* Oxygen Concentration Slider */}
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
                       <span style={{ color: '#fff' }}>Oxygen Mole Fraction (O₂)</span>
                       <span className="font-mono" style={{ color: 'var(--accent-cyan)' }}>{simOxygen}%</span>
                     </div>
@@ -920,9 +977,9 @@ export default function App() {
                       onChange={e => setSimOxygen(e.target.value)}
                       style={{ width: '100%', accentColor: 'var(--accent-cyan)' }}
                     />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
                       <span>14% (Extinction)</span>
-                      <span>21% (ISS/Earth)</span>
+                      <span>21% (ISS)</span>
                       <span>34% (Moon Hab)</span>
                       <span>100% (EVA)</span>
                     </div>
@@ -930,8 +987,8 @@ export default function App() {
 
                   {/* Pressure Slider */}
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
-                      <span style={{ color: '#fff' }}>Cabin Pressure (P)</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
+                      <span style={{ color: '#fff' }}>Cabin Total Pressure</span>
                       <span className="font-mono" style={{ color: 'var(--accent-orange)' }}>{simPressure} psi ({Math.round(simPressure * 6.894)} kPa)</span>
                     </div>
                     <input
@@ -943,17 +1000,17 @@ export default function App() {
                       onChange={e => setSimPressure(e.target.value)}
                       style={{ width: '100%', accentColor: 'var(--accent-orange)' }}
                     />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
-                      <span>4.3 psi (Spacesuit)</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
+                      <span>4.3 psi (EVA)</span>
                       <span>8.2 psi (Orion)</span>
-                      <span>10.2 psi (Lunar Base)</span>
+                      <span>10.2 psi (Artemis Hab)</span>
                       <span>14.7 psi (1 atm)</span>
                     </div>
                   </div>
 
                   {/* Airflow Velocity Slider */}
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
                       <span style={{ color: '#fff' }}>Forced Ventilation Airflow</span>
                       <span className="font-mono" style={{ color: 'var(--accent-green)' }}>{simAirflow} cm/s</span>
                     </div>
@@ -966,130 +1023,215 @@ export default function App() {
                       onChange={e => setSimAirflow(e.target.value)}
                       style={{ width: '100%', accentColor: 'var(--accent-green)' }}
                     />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
                       <span>0 cm/s (Quiescent)</span>
-                      <span>5-10 cm/s (Nominal Vent)</span>
-                      <span>35 cm/s (High Duct)</span>
+                      <span>5-10 cm/s (Nominal Duct)</span>
+                      <span>35 cm/s (High Flow)</span>
                     </div>
                   </div>
 
-                  {/* Preset Buttons */}
+                  {/* Preset Mission Buttons */}
                   <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.8rem' }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                      Quick Mission Environment Presets
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                      Quick Exploration Environment Presets
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.45rem' }}>
                       <button
-                        onClick={() => { setSimOxygen(21); setSimPressure(14.7); setSimAirflow(8); }}
-                        style={{ padding: '0.4rem', fontSize: '0.72rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
+                        onClick={() => { setSimMaterial('fabric'); setSimOxygen(21); setSimPressure(14.7); setSimAirflow(8); setSimThickness(3.0); setSimGravity('microgravity'); }}
+                        style={{ padding: '0.42rem', fontSize: '0.73rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
                       >
                         ISS Nominal
                       </button>
                       <button
-                        onClick={() => { setSimOxygen(34); setSimPressure(10.2); setSimAirflow(5); }}
-                        style={{ padding: '0.4rem', fontSize: '0.72rem', background: 'rgba(0, 229, 255, 0.1)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', borderRadius: '4px', cursor: 'pointer' }}
+                        onClick={() => { setSimMaterial('fabric'); setSimOxygen(34); setSimPressure(10.2); setSimAirflow(5); setSimThickness(3.0); setSimGravity('microgravity'); }}
+                        style={{ padding: '0.42rem', fontSize: '0.73rem', background: 'rgba(0, 229, 255, 0.1)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
                       >
                         Artemis Lunar Base
                       </button>
                       <button
-                        onClick={() => { setSimOxygen(100); setSimPressure(4.3); setSimAirflow(2); }}
-                        style={{ padding: '0.4rem', fontSize: '0.72rem', background: 'rgba(255, 61, 0, 0.1)', border: '1px solid var(--accent-flame)', color: 'var(--accent-flame)', borderRadius: '4px', cursor: 'pointer' }}
+                        onClick={() => { setSimMaterial('wire_insulation'); setSimOxygen(100); setSimPressure(4.3); setSimAirflow(2); setSimThickness(1.5); setSimGravity('microgravity'); }}
+                        style={{ padding: '0.42rem', fontSize: '0.73rem', background: 'rgba(255, 61, 0, 0.1)', border: '1px solid var(--accent-flame)', color: 'var(--accent-flame)', borderRadius: '4px', cursor: 'pointer' }}
                       >
                         EVA Spacesuit
                       </button>
                       <button
-                        onClick={() => { setSimOxygen(15); setSimPressure(10.2); setSimAirflow(0); }}
-                        style={{ padding: '0.4rem', fontSize: '0.72rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
+                        onClick={() => { setSimMaterial('fabric'); setSimOxygen(21); setSimPressure(14.7); setSimAirflow(0); setSimThickness(3.0); setSimGravity('normal'); }}
+                        style={{ padding: '0.42rem', fontSize: '0.73rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
                       >
-                        Quiescent / Vented
+                        Earth Normal (1-g)
                       </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Modeler Output Display */}
-                {simResult && (
-                  <div style={{ background: 'var(--bg-surface)', padding: '1.5rem', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {/* Modeler Output Display with Risk Gauge */}
+                {simResult && simResult.predictions && (
+                  <div style={{ background: 'var(--bg-surface)', padding: '1.6rem', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.3rem' }}>
+                    
+                    {/* Header Row: Title, Confidence, Risk Level Badge */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.8rem' }}>
                       <div>
-                        <h2 className="font-heading" style={{ fontSize: '1.3rem', color: '#fff' }}>
-                          Microgravity Combustion Simulation Output
-                        </h2>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          Simulating {simResult.inputs.material} at {simResult.inputs.oxygen_pct}% O₂, {simResult.inputs.pressure_psi} psi, and {simResult.inputs.airflow_cm_s} cm/s
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                          <h2 className="font-heading" style={{ fontSize: '1.35rem', color: '#fff' }}>
+                            AI Flammability Prediction
+                          </h2>
+                          <span className="badge" style={{ background: 'rgba(0, 229, 255, 0.12)', color: 'var(--accent-cyan)', border: '1px solid rgba(0, 229, 255, 0.3)' }}>
+                            GRADIENT BOOSTING ML
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                          Simulating {simResult.inputs.material_type} at {simResult.inputs.oxygen_pct}% O₂, {simResult.inputs.pressure_psi} psi, and {simResult.inputs.airflow_cm_s} cm/s ({simResult.inputs.gravity_level})
                         </div>
                       </div>
-                      <span className="badge" style={{
-                        background: simResult.predictions.will_ignite_and_propagate ? 'rgba(255, 61, 0, 0.2)' : 'rgba(0, 230, 118, 0.2)',
-                        color: simResult.predictions.will_ignite_and_propagate ? 'var(--accent-flame)' : 'var(--accent-green)',
-                        border: `1px solid ${simResult.predictions.will_ignite_and_propagate ? 'var(--accent-flame)' : 'var(--accent-green)'}`,
-                        fontSize: '0.8rem',
-                        padding: '0.35rem 0.8rem'
-                      }}>
-                        {simResult.predictions.hazard_level}
-                      </span>
-                    </div>
 
-                    {/* Metric Cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Limiting O₂ Conc. (LOC)</div>
-                        <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--accent-cyan)', marginTop: '0.3rem' }}>
-                          {simResult.predictions.limiting_oxygen_concentration_loc}%
-                        </div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>Extinction threshold</div>
-                      </div>
-
-                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Flame Spread Rate</div>
-                        <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--accent-orange)', marginTop: '0.3rem' }}>
-                          {simResult.predictions.flame_spread_rate_mm_s} <span style={{ fontSize: '0.8rem' }}>mm/s</span>
-                        </div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>Concurrent / Opposed flow</div>
-                      </div>
-
-                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Relative Soot Yield</div>
-                        <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e040fb', marginTop: '0.3rem' }}>
-                          {simResult.predictions.relative_soot_yield_factor}x
-                        </div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>Normalized vs Earth 1g</div>
-                      </div>
-
-                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Risk Index Score</div>
-                        <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 700, color: simResult.predictions.risk_index_score > 70 ? 'var(--accent-flame)' : 'var(--accent-green)', marginTop: '0.3rem' }}>
-                          {simResult.predictions.risk_index_score} <span style={{ fontSize: '0.8rem' }}>/100</span>
-                        </div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>Crew vulnerability index</div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span className="badge" style={{
+                          background: simResult.predictions.risk_level === 'CRITICAL' ? 'rgba(255, 61, 0, 0.25)' :
+                                      simResult.predictions.risk_level === 'HIGH' ? 'rgba(255, 112, 67, 0.25)' :
+                                      simResult.predictions.risk_level === 'MODERATE' ? 'rgba(255, 214, 0, 0.2)' : 'rgba(0, 230, 118, 0.2)',
+                          color: simResult.predictions.risk_level === 'CRITICAL' ? 'var(--accent-flame)' :
+                                 simResult.predictions.risk_level === 'HIGH' ? 'var(--accent-orange)' :
+                                 simResult.predictions.risk_level === 'MODERATE' ? '#ffd600' : 'var(--accent-green)',
+                          border: `1px solid ${
+                            simResult.predictions.risk_level === 'CRITICAL' ? 'var(--accent-flame)' :
+                            simResult.predictions.risk_level === 'HIGH' ? 'var(--accent-orange)' :
+                            simResult.predictions.risk_level === 'MODERATE' ? '#ffd600' : 'var(--accent-green)'
+                          }`,
+                          fontSize: '0.9rem',
+                          padding: '0.4rem 1rem'
+                        }}>
+                          {simResult.predictions.risk_level} RISK
+                        </span>
                       </div>
                     </div>
 
-                    {/* Operational Recommendation Alert Box */}
-                    <div style={{
-                      background: 'rgba(14, 21, 38, 0.8)',
-                      padding: '1.2rem',
+                    {/* Central Gauge & Risk Narrative Box */}
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: '220px 1fr', 
+                      gap: '1.5rem', 
+                      alignItems: 'center',
+                      background: 'var(--bg-card)', 
+                      padding: '1.2rem', 
                       borderRadius: '8px',
-                      borderLeft: `4px solid ${simResult.predictions.will_ignite_and_propagate ? 'var(--accent-flame)' : 'var(--accent-green)'}`
+                      border: '1px solid var(--border-color)'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', fontWeight: 600, color: '#fff' }}>
-                        {simResult.predictions.will_ignite_and_propagate ? <AlertTriangle color="var(--accent-flame)" size={18} /> : <CheckCircle2 color="var(--accent-green)" size={18} />}
-                        Automated Fire Suppression Protocol & Engineering Guidance
+                      {/* Semi-Circle Risk Score Gauge */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ position: 'relative', width: '180px', height: '100px', overflow: 'hidden' }}>
+                          <svg viewBox="0 0 100 50" style={{ width: '100%', height: '100%' }}>
+                            {/* Gauge Background Track */}
+                            <path
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke="#1e2e4f"
+                              strokeWidth="10"
+                              strokeLinecap="round"
+                            />
+                            {/* Gauge Color Dynamic Meter */}
+                            <path
+                              d="M 10 50 A 40 40 0 0 1 90 50"
+                              fill="none"
+                              stroke={
+                                simResult.predictions.ignition_risk_score >= 80 ? '#ff3d00' :
+                                simResult.predictions.ignition_risk_score >= 60 ? '#ff7043' :
+                                simResult.predictions.ignition_risk_score >= 35 ? '#ffd600' : '#00e676'
+                              }
+                              strokeWidth="10"
+                              strokeDasharray="125.6"
+                              strokeDashoffset={125.6 * (1 - simResult.predictions.ignition_risk_score / 100)}
+                              strokeLinecap="round"
+                              style={{ transition: 'stroke-dashoffset 0.5s ease, stroke 0.3s ease' }}
+                            />
+                          </svg>
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '0',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            textAlign: 'center'
+                          }}>
+                            <div className="font-mono" style={{
+                              fontSize: '1.6rem',
+                              fontWeight: 700,
+                              color: simResult.predictions.ignition_risk_score >= 80 ? 'var(--accent-flame)' :
+                                     simResult.predictions.ignition_risk_score >= 60 ? 'var(--accent-orange)' :
+                                     simResult.predictions.ignition_risk_score >= 35 ? '#ffd600' : 'var(--accent-green)'
+                            }}>
+                              {simResult.predictions.ignition_risk_score}
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginTop: '0.2rem' }}>
+                          Ignition Risk Score (/100)
+                        </div>
                       </div>
-                      <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                        {simResult.engineering_guidance}
-                      </p>
+
+                      {/* Explanation & Model Confidence */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ fontSize: '0.88rem', color: '#fff', lineHeight: '1.5' }}>
+                          {simResult.predictions.risk_explanation}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.3rem' }}>
+                          <span className="badge" style={{ background: 'rgba(41, 121, 255, 0.15)', color: 'var(--accent-cool)', fontSize: '0.7rem' }}>
+                            Model Confidence: {simResult.predictions.confidence}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Physics Explanation Callout */}
-                    <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                      <h4 className="font-heading" style={{ fontSize: '0.85rem', color: 'var(--accent-cyan)', marginBottom: '0.4rem' }}>
-                        Why this happens in microgravity:
-                      </h4>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                        At {simResult.inputs.airflow_cm_s} cm/s airflow, natural buoyant upward drafting is absent. The flame relies on forced convective oxidizer feed from cabin ventilation fans. Under Artemis exploration atmospheres (34% O₂ at 10.2 psi), combustion kinetics are accelerated while radiative losses are reduced, sustaining flame propagation over materials that would self-extinguish under normal terrestrial testing.
-                      </p>
+                    {/* Metric Cards Row */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Predicted LOC (Extinction Limit)</div>
+                        <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-cyan)', marginTop: '0.2rem' }}>
+                          {simResult.predictions.loc_predicted}% <span style={{ fontSize: '0.8rem' }}>O₂</span>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                          Safe threshold: {simResult.inputs.oxygen_pct < simResult.predictions.loc_predicted ? 'SAFE (O₂ < LOC)' : 'UNSAFE (O₂ ≥ LOC)'}
+                        </div>
+                      </div>
+
+                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Predicted Flame Spread Rate</div>
+                        <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-orange)', marginTop: '0.2rem' }}>
+                          {simResult.predictions.flame_spread_rate} <span style={{ fontSize: '0.8rem' }}>mm/s</span>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                          Standard 1-g spread: ~1.2 mm/s
+                        </div>
+                      </div>
+
+                      <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Soot / Aerosol Yield Index</div>
+                        <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#e040fb', marginTop: '0.2rem' }}>
+                          {simResult.predictions.soot_yield} <span style={{ fontSize: '0.8rem' }}>/ 1.0</span>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                          Obscuration: {simResult.predictions.soot_yield > 0.5 ? 'Dense Smoke' : 'Moderate Smoke'}
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Supporting NASA Evidence from PSI Investigations */}
+                    {simResult.supporting_investigations && simResult.supporting_investigations.length > 0 && (
+                      <div style={{ background: 'rgba(0, 229, 255, 0.04)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '1.1rem', borderRadius: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                          <CheckCircle2 size={16} color="var(--accent-cyan)" />
+                          <h4 className="font-heading" style={{ fontSize: '0.88rem', color: 'var(--accent-cyan)' }}>
+                            Supporting NASA Flight Evidence & Investigation Grounding
+                          </h4>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {simResult.supporting_investigations.map((cite, idx) => (
+                            <div key={idx} style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                              <strong style={{ color: '#fff' }}>• {cite.name}:</strong> {cite.finding}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                   </div>
                 )}
               </div>
